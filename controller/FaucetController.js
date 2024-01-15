@@ -1,25 +1,17 @@
-// import contract from '../config/contract';
-// import web3 from '../config/web3';
-const contract = require('../config/contract')
-const web3 = require('../config/web3')
-// import { isAddress } from 'web3-validator';
+const {contract, web3} = require('../config/contract')
+// const isAddress = require('web3-validator')
 
+const contractAddress = '0xA4ea16b8bc097076d5a45346F4B76FD6561d8d20';
 
-const adminAddress = '0x99C18D7d718d0866b42AAd86128C645887818114';
-
-async function handleFaucet(userAddress) {
+const handleFaucet = async (req, res) => {
+  const userAddress = req.body.address;
   try {
-    // Kiểm tra tính hợp lệ của địa chỉ người dùng (có thể thêm kiểm tra bổ sung nếu cần)
-    if (!isAddress(userAddress)) {
-      return { success: false, error: 'Invalid user address' };
-    }
-
-    // Gọi chức năng faucet từ smart contract
     const gasPrice = await web3.eth.getGasPrice();
-    const result = await contract.methods.receiveTokenERC20(userAddress).send({ from: adminAddress, gasPrice });
+    
+    // console.log(contract.methods.getToken().call().then(data => console.log(data)));
+    const result = await contract.methods.receiveTokenERC20(userAddress).send({ from: "0x99C18D7d718d0866b42AAd86128C645887818114" });
 
-    // Lưu thông tin faucet vào MongoDB (hoặc nơi lưu trữ khác)
-    await saveFaucetLog(userAddress, result.transactionHash);
+    // await saveFaucetLog(userAddress, result.transactionHash);
 
     return { success: true, transactionHash: result.transactionHash };
   } catch (error) {
@@ -27,10 +19,9 @@ async function handleFaucet(userAddress) {
     return { success: false, error: 'Internal Server Error' };
   }
 }
-
-async function saveFaucetLog(userAddress, transactionHash) {
+const saveFaucetLog = async (userAddress, transactionHash) => {
     try {
-      const faucetLog = new FaucetLog({
+      const faucetLog = new faucetLogSchema({
         userAddress: userAddress,
         transactionHash: transactionHash,
       });
@@ -42,4 +33,4 @@ async function saveFaucetLog(userAddress, transactionHash) {
     }
   }
 
-module.exports = handleFaucet;
+module.exports = { handleFaucet, saveFaucetLog };

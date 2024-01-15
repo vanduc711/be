@@ -6,4 +6,4 @@ const faucetLogSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now }
 });
 
-const FaucetLog = mongoose.model('FaucetLog', faucetLogSchema);
+module.exports = model("Faucet", faucetLogSchema)

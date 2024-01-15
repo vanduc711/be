@@ -1,15 +1,18 @@
-// server.js
-const express = require("express")
-// import bodyParser from 'body-parser';
-// import  handleFaucet from './controller/FaucetController';
-const authRoute = require('./controller/FaucetController')
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+const { routers } = require('./routes/faucet')
 
-const app = express();
 const port = 3000;
 
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 
-app.use("/api/auth", authRoute)
+mongoose.connect("mongodb+srv://Vanduc711:vanduc711@cluster0.682ao.mongodb.net/")
+  .then(() => console.info('MongoDB connected'))
+  .catch(console.error)
+
+routers(app)
 
 
 app.listen(port, () => {
