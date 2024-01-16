@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { model } = require('mongoose');
 
 const faucetLogSchema = new mongoose.Schema({
   userAddress: { type: String, required: true },
